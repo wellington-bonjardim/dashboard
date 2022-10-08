@@ -50,12 +50,58 @@
             $this->conexao = $conexao->conectar();
             $this->dashboard = $dashboard;
         }
+
+        public function getNumeroVendas() {
+            $query = "
+                SELECT 
+                    COUNT(*) as numero_vendas 
+                FROM 
+                    tb_vendas 
+                WHERE 
+                    data_venda 
+                BETWEEN 
+                    :data_inicio AND :data_fim";
+
+            $stmt = $this->conexao->prepare($query);
+            $stmt->bindValue(':data_inicio', $this->dashboard->__get('data_inicio'));
+            $stmt->bindValue(':data_fim', $this->dashboard->__get('data_fim'));
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_OBJ)->numero_vendas;
+        }
+
+        public function getTotalVendas() {
+            $query = "
+                SELECT 
+                    SUM(total) as total_vendas 
+                FROM 
+                    tb_vendas 
+                WHERE 
+                    data_venda 
+                BETWEEN 
+                    :data_inicio AND :data_fim";
+
+            $stmt = $this->conexao->prepare($query);
+            $stmt->bindValue(':data_inicio', $this->dashboard->__get('data_inicio'));
+            $stmt->bindValue(':data_fim', $this->dashboard->__get('data_fim'));
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_OBJ)->total_vendas;
+        }
     }
 
     $dashboard = new Dashboard();
 
     $conexao = new Conexao();
 
+    $dashboard->__set('data_inicio', '2018-10-01');
+    $dashboard->__set('data_fim', '2018-10-31');
+
     $bd = new Bd($conexao, $dashboard);
 
+    $dashboard->__set('numeroVendas', $bd->getNumeroVendas());
+    $dashboard->__set('totalVendas', $bd->getTotalVendas());
+    print_r($dashboard);
+
+  
 ?>
