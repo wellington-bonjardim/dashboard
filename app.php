@@ -101,6 +101,5 @@
 
     $dashboard->__set('numeroVendas', $bd->getNumeroVendas());
     $dashboard->__set('totalVendas', $bd->getTotalVendas());
-    print_r($dashboard);
-
+    
 ?>

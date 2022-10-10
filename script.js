@@ -15,7 +15,6 @@ $(document).ready(() => {
             $('#pagina').html(data)
         }) 
         */
-        
     })
 
     $('#suporte').on('click', () => {
@@ -34,6 +33,5 @@ $(document).ready(() => {
             $('#pagina').html(data)
         })
         */
-        
     })
 })
