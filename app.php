@@ -94,12 +94,19 @@
 
     $conexao = new Conexao();
 
-    $dashboard->__set('data_inicio', '2018-10-01');
-    $dashboard->__set('data_fim', '2018-10-31');
+    $competencia = explode('-', $_GET['competencia']);
+    $ano = $competencia[0];
+    $mes = $competencia[1];
+    $dias_do_mes = cal_days_in_month(CAL_GREGORIAN, $mes, $ano); //cal_days_in_month(TIPO DO CALENDARIO, MÊS, ANO) é uma função nativa do PHP
+
+
+    $dashboard->__set('data_inicio', $ano.'-'.$mes.'-01');
+    $dashboard->__set('data_fim', $ano.'-'.$mes.'-'.$dias_do_mes);
 
     $bd = new Bd($conexao, $dashboard);
 
     $dashboard->__set('numeroVendas', $bd->getNumeroVendas());
     $dashboard->__set('totalVendas', $bd->getTotalVendas());
+    echo json_encode($dashboard); //json_enconde() transcreve o objeto para uma string json e encaminha para o body do request
     
 ?>
