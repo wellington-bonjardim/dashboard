@@ -57,7 +57,8 @@ $(document).ready(() => {
             dataType: 'json',//usar junto com json_encode() do lado do backend
             success: dados => {
                 $('#numeroVendas').html(dados.numeroVendas),
-                $('#totalVendas').html(dados.totalVendas)
+                $('#totalVendas').html(dados.totalVendas),
+                $('#totalDespesas').html(dados.totalDespesas)
             },
             error:  erro => {console.log(erro)}
         })

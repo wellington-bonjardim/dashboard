@@ -5,6 +5,7 @@
         public $data_fim;
         public $numeroVendas;
         public $totalVendas;
+        public $totalDespesas;
 
         public function __get($atributo) {
             return $this->$atributo;
@@ -60,7 +61,8 @@
                 WHERE 
                     data_venda 
                 BETWEEN 
-                    :data_inicio AND :data_fim";
+                    :data_inicio AND :data_fim
+                ";
 
             $stmt = $this->conexao->prepare($query);
             $stmt->bindValue(':data_inicio', $this->dashboard->__get('data_inicio'));
@@ -79,7 +81,8 @@
                 WHERE 
                     data_venda 
                 BETWEEN 
-                    :data_inicio AND :data_fim";
+                    :data_inicio AND :data_fim
+                ";
 
             $stmt = $this->conexao->prepare($query);
             $stmt->bindValue(':data_inicio', $this->dashboard->__get('data_inicio'));
@@ -87,6 +90,26 @@
             $stmt->execute();
 
             return $stmt->fetch(PDO::FETCH_OBJ)->total_vendas;
+        }
+
+        public function getTotalDespesas() {
+            $query = "
+                SELECT 
+                    SUM(total) AS total_despesas 
+                FROM 
+                    tb_despesas 
+                WHERE 
+                    data_despesa
+                BETWEEN 
+                    :data_inicio AND :data_fim
+            ";
+
+            $stmt = $this->conexao->prepare($query);
+            $stmt->bindValue(':data_inicio', $this->dashboard->__get('data_inicio'));
+            $stmt->bindValue(':data_fim', $this->dashboard->__get('data_fim'));
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_OBJ)->total_despesas;
         }
     }
 
@@ -107,6 +130,7 @@
 
     $dashboard->__set('numeroVendas', $bd->getNumeroVendas());
     $dashboard->__set('totalVendas', $bd->getTotalVendas());
+    $dashboard->__set('totalDespesas', $bd->getTotalDespesas());
     echo json_encode($dashboard); //json_enconde() transcreve o objeto para uma string json e encaminha para o body do request
     
 ?>
