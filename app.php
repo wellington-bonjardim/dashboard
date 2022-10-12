@@ -5,6 +5,11 @@
         public $data_fim;
         public $numeroVendas;
         public $totalVendas;
+        public $clientesAtivos;
+        public $clientesInativos;
+        public $totalReclamacoes;
+        public $totalElogios;
+        public $totalSugestoes;
         public $totalDespesas;
 
         public function __get($atributo) {
@@ -92,6 +97,86 @@
             return $stmt->fetch(PDO::FETCH_OBJ)->total_vendas;
         }
 
+        public function getClientesAtivos() {
+            $query = "
+                SELECT 
+                    COUNT(cliente_ativo) AS cliente_ativo
+                FROM 
+                    tb_clientes 
+                WHERE 
+                    cliente_ativo=1;
+            ";
+
+            $stmt = $this->conexao->prepare($query);
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_OBJ)->cliente_ativo;
+        }
+
+        public function getClientesInativos() {
+            $query = "
+                SELECT 
+                    COUNT(cliente_ativo) AS cliente_inativo
+                FROM 
+                    tb_clientes 
+                WHERE 
+                    cliente_ativo != 1;
+            ";
+
+            $stmt = $this->conexao->prepare($query);
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_OBJ)->cliente_inativo;
+        }
+
+        public function getTotalReclamacoes() {
+            $query = "
+                SELECT 
+                    COUNT(tipo_contato) AS total_reclamacoes
+                FROM 
+                    tb_contatos 
+                WHERE 
+                    tipo_contato = 1;
+            ";
+
+            $stmt = $this->conexao->prepare($query);
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_OBJ)->total_reclamacoes;
+        }
+
+        public function getTotalElogios() {
+            $query = "
+                SELECT 
+                    COUNT(tipo_contato) AS total_elogios
+                FROM 
+                    tb_contatos 
+                WHERE 
+                    tipo_contato = 2;
+            ";
+
+            $stmt = $this->conexao->prepare($query);
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_OBJ)->total_elogios;
+        }
+
+        public function getTotalSugestoes() {
+            $query = "
+                SELECT 
+                    COUNT(tipo_contato) AS total_sugestoes
+                FROM 
+                    tb_contatos 
+                WHERE 
+                    tipo_contato = 3;
+            ";
+
+            $stmt = $this->conexao->prepare($query);
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_OBJ)->total_sugestoes;
+        }
+
         public function getTotalDespesas() {
             $query = "
                 SELECT 
@@ -130,6 +215,11 @@
 
     $dashboard->__set('numeroVendas', $bd->getNumeroVendas());
     $dashboard->__set('totalVendas', $bd->getTotalVendas());
+    $dashboard->__set('clientesAtivos', $bd->getClientesAtivos());
+    $dashboard->__set('clientesInativos', $bd->getClientesInativos());
+    $dashboard->__set('totalReclamacoes', $bd->getTotalReclamacoes());
+    $dashboard->__set('totalElogios', $bd->getTotalElogios());
+    $dashboard->__set('totalSugestoes', $bd->getTotalSugestoes());
     $dashboard->__set('totalDespesas', $bd->getTotalDespesas());
     echo json_encode($dashboard); //json_enconde() transcreve o objeto para uma string json e encaminha para o body do request
     
